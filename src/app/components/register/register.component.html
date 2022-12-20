@@ -1,0 +1,125 @@
+<div class="container pt-0 mt-3">
+    <div class="row">
+        <div class="col-12 offset-sm-1 col-sm-10 offset-lg-3 col-lg-6 mb-5">
+            <img src="assets/images/football-predictions.png" class="img-fluid mx-auto d-block" i18n-alt="@@predictions" alt="Predictions" i18n-title="@@predictions_title" title="Predictions" [routerLink]="['/']">
+        </div>
+        <div class="col-12 offset-sm-1 col-sm-10 offset-md-2 col-md-8 my-auto">
+            <div class="card card-outline-second">
+                <div class="card-header">
+                    <h3 i18n-title="@@register" title="Register" i18n="@@register" class="text-center">Register</h3>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="formValidationService.formGroup">
+                        <ul>
+                            <li *ngFor="let error of formValidationService.errors.general" class="text-danger">
+                                <span i18n="@@general_error_message">{error, select, Server is not available {Server is not available.} other {{{error}}}}</span>
+                            </li>
+                        </ul>
+                        <fieldset>
+                            <div class="form-group row">
+                                <div class="col-12 col-md-6">
+                                    <label class="col-12" for="firstName"><span class="red-asterisk" i18n-title="@@first_name_title" title="First name" i18n="@@first_name">First name</span>:</label>
+                                    <div class="col-12">
+                                        <input type="text" class="form-control" id="firstName" formControlName="firstName" i18n-title="@@please_enter_your_name_here" title="Please enter your name here." />
+                                        <!-- Client validation -->
+                                        <div *ngIf="formValidationService.controlHasError('firstName', 'required')" class="text-danger" i18n="@@first_name_is_required">First name is required.</div>
+                                        <div *ngIf="formValidationService.controlHasError('firstName', 'pattern')" class="text-danger" i18n="@@first_name_should_only_contain_letters">First name should only contain letters.</div>
+                                        <div *ngIf="formValidationService.controlHasError('firstName', 'maxlength')" class="text-danger" i18n="@@first_name_should_be_maximum_100_symbols">First name should be maximum 100 symbols.</div>
+                                        <div *ngIf="formValidationService.controlHasError('firstName')">
+                                            <div *ngFor="let error of formValidationService.errors['firstName']" class="text-danger">{{ error }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="col-12" for="lastName"><span class="red-asterisk" i18n-title="@@last_name_title" title="Last name" i18n="@@last_name">Last name</span>:</label>
+                                    <div class="col-12">
+                                        <input type="text" class="form-control" id="lastName" formControlName="lastName" i18n-title="@@please_enter_your_last_name_here" title="Please enter your last name here." />
+                                        <!-- Client validation -->
+                                        <div *ngIf="formValidationService.controlHasError('lastName', 'required')" class="text-danger" i18n="@@last_name_is_required">Last name is required.</div>
+                                        <div *ngIf="formValidationService.controlHasError('lastName', 'pattern')" class="text-danger" i18n="@@last_name_should_only_contain_letters">Last name should only contain letters.</div>
+                                        <div *ngIf="formValidationService.controlHasError('lastName', 'maxlength')" class="text-danger" i18n="@@last_name_should_be_maximum_100_symbols">Last name should be maximum 100 symbols.</div>
+                                        <div *ngIf="formValidationService.controlHasError('lastName')">
+                                            <div *ngFor="let error of formValidationService.errors['lastName']" class="text-danger">{{ error }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-12 col-md-6">
+                                    <label class="col-12" for="phoneNumber"><span i18n-title="@@phone_title" title="Phone Number" i18n="@@phone">Phone</span>:</label>
+                                    <div class="col-12">
+                                        <input type="tel" class="form-control" id="phoneNumber" formControlName="phoneNumber" i18n-title="@@please_enter_your_phone_number_here" title="Please enter your phone number here." />
+                                        <div *ngIf="formValidationService.controlHasError('phoneNumber', 'pattern')" class="text-danger" i18n="@@phone_number_is_invalid">Phone number is invalid.</div>
+                                        <div *ngIf="formValidationService.controlHasError('phoneNumber', 'maxlength')" class="text-danger" i18n="@@phone_number_should_be_maximum_100_symbols">Phone number should be maximum 100 symbols.</div>
+                                        <div *ngIf="formValidationService.controlHasError('phoneNumber')">
+                                            <div *ngFor="let error of formValidationService.errors['phoneNumber']" class="text-danger">{{ error }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="col-12" for="dateOfBirth"><span i18n-title="@@date_of_birth_title" title="Date of birth" i18n="@@date_of_birth">Date of birth</span>:</label>
+                                    <div class="col-12">
+                                        <input type="date" class="form-control" id="dateOfBirth" formControlName="dateOfBirth" i18n-title="@@please_enter_your_date_of_birth_here" title="Please enter your date of birth here." />
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend class="col-12 col-md-12 legend-decoration" i18n-title="@@login_information" title="Login information" i18n="@@login_information">Login information</legend>
+                            <div class="form-group">
+                                <label class="col-12" for="email"><span class="red-asterisk" i18n-title="@@email_title" title="Email" i18n="@@email">Email</span>:</label>
+                                <div class="col-12 col-md-8">
+                                    <input type="email" class="form-control" id="email" formControlName="email" i18n-title="@@please_enter_your_email_here" title="Please enter your email here." />
+                                    <!-- Client validation -->
+                                    <div *ngIf="formValidationService.controlHasError('email', 'required')" class="text-danger" i18n="@@email_is_required">Email is required.</div>
+                                    <div *ngIf="formValidationService.controlHasError('email', 'pattern')" class="text-danger" i18n="@@email_is_invalid">Email is invalid.</div>
+                                    <div *ngIf="formValidationService.controlHasError('email')">
+                                        <div *ngFor="let error of formValidationService.errors['email']" class="text-danger">{{ error }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-12" for="password"><span class="red-asterisk" i18n-title="@@password_title" title="Password" i18n="@@password">Password</span>:</label>
+                                <div class="col-12 col-md-8">
+                                    <input type="password" class="form-control" id="password" formControlName="password" i18n-title="@@please_enter_your_password_here" title="Please enter your password here" autocomplete="new-password" />
+                                    <!-- Client validation -->
+                                    <div *ngIf="formValidationService.controlHasError('password', 'required')" class="text-danger" i18n="@@password_is_required">Password is required.</div>
+                                    <div *ngIf="formValidationService.controlHasError('password', 'minlength')" class="text-danger" i18n="@@password_minlength">Password must be at least 6 characters.</div>
+                                    <div *ngIf="formValidationService.controlHasError('password', 'pattern')" class="text-danger" i18n="@@password_cannot_begin_or_end_with_space">Password cannot begin or end with space.</div>
+                                    <div *ngIf="formValidationService.controlHasError('password')">
+                                        <div *ngFor="let error of formValidationService.errors['password']" class="text-danger">{{ error }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-12" for="confirmPassword"><span class="red-asterisk" i18n-title="@@confirm_password_title" title="Confirm Password" i18n="@@confirm_password">Confirm Password</span>:</label>
+                                <div class="col-12 col-md-8">
+                                    <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword" i18n-title="@@please_confirm_your_password_here" title="Please confirm your password here" />
+                                    <!-- Client validation -->
+                                    <div *ngIf="formValidationService.controlHasError('confirmPassword', 'required')" class="text-danger" i18n="@@confirm_password_is_required">Confirm password is required.</div>
+                                    <div *ngIf="formValidationService.controlHasError('confirmPassword', 'minlength')" class="text-danger" i18n="@@confirm_password_minlength">Password must be at least 6 characters.</div>
+                                    <div *ngIf="formValidationService.controlHasError('confirmPassword', 'pattern')" class="text-danger" i18n="@@password_cannot_begin_or_end_with_space">Password cannot begin or end with space.</div>
+                                    <div *ngIf="formValidationService.controlHasError('confirmPassword')">
+                                        <div *ngFor="let error of formValidationService.errors['confirmPassword']" class="text-danger">
+                                            <span i18n="@@password_missmatch_error">{error, select, Password missmatch. {Password missmatch.} other {{{error}}}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="form-group">
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <input class="btn btn-block btn-primary" type="submit" (click)="onSubmitButtonClicked()" i18n-title="@@register" title="Register" i18n-value="@@register" value="Register" />
+                            </div>
+                        </div>
+                    </form>
+                    <div class="form-group">
+                        <div class="col-12">
+                            <a [routerLink]="['../', 'login']" i18n-title="@@login" title="Login" i18n="@@login">Login</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

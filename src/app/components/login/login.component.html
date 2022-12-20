@@ -1,0 +1,52 @@
+<div class="container pt-0 pt-sm-5 mt-3 mt-sm-5">
+    <div class="row">
+        <div class="col-12 offset-sm-1 col-sm-10 offset-lg-3 col-lg-6 mb-5">
+            <img src="assets/images/football-predictions.png" class="img-fluid mx-auto d-block" i18n-alt="@@predictions" alt="Predictions" i18n-title="@@predictions_title" title="Predictions" [routerLink]="['/']">
+        </div>
+        <div class="col-12 offset-sm-1 col-sm-10 offset-md-2 col-md-8 offset-lg-3 col-lg-6 my-auto">
+            <div class="card card-outline-second">
+                <div class="card-header">
+                    <h3 i18n-title="@@login" title="Login" i18n="@@login" class="text-center">Login</h3>
+                </div>
+                <div class="card-body">
+                    <form novalidate *ngIf="formValidationService.formGroup !== undefined && formValidationService.formGroup !== null" [formGroup]="formValidationService.formGroup">
+                        <div class="form-group">
+                            <label for="email" class="col-12"><span i18n-title="@@email" title="Email" i18n="@@еmail">Email</span>:</label>
+                            <div class="col-12">
+                                <input type="email" id="email" class="form-control" formControlName="email" i18n-title="@@please_enter_your_email_here" title="Please enter your email here." required />
+                                <!-- Client validation -->
+                                <div *ngIf="formValidationService.controlHasError('email', 'required')" class="text-danger" i18n="@@email_is_required">Email is required.</div>
+                                <div *ngIf="formValidationService.controlHasError('email', 'pattern')" class="text-danger" i18n="@@email_is_invalid">Email is invalid.</div>
+                                <div *ngIf="formValidationService.controlHasError('email')">
+                                    <div *ngFor="let error of formValidationService.errors['email']" class="text-danger">{{ error }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-12" for="password"><span i18n-title="@@password" title="Password" i18n="@@password">Password</span>:</label>
+                            <div class="col-12">
+                                <input type="password" id="password" class="form-control" formControlName="password" i18n-title="@@please_enter_your_password_here"
+                                    title="Please enter your password here" required>
+                                <!-- Client validation -->
+                                <div *ngIf="formValidationService.controlHasError('password', 'required')" class="text-danger" i18n="@@password_is_required">Password is required.</div>
+                                <div *ngIf="formValidationService.controlHasError('password')">
+                                    <div *ngFor="let error of formValidationService.errors['password']" class="text-danger">{{ error }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <input type="submit" (click)="onSubmitButtonClicked()" class="btn btn-primary btn-block" i18n-title="@@login" title="Login" i18n-value="@@login" value="Login" />
+                            </div>
+                        </div>
+                    </form>
+                    <div class="form-group">
+                        <div class="col-12">
+                            <a [routerLink]="['../', 'register']" i18n-title="@@register" title="Register" i18n="@@register">Register</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
