@@ -12,7 +12,7 @@
                     <form [formGroup]="formValidationService.formGroup">
                         <ul>
                             <li *ngFor="let error of formValidationService.errors.general" class="text-danger">
-                                <span i18n="@@general_error_message">{error, select, Server is not available {Server is not available.} other {{{error}}}}</span>
+                                <span i18n="@@general_error_message">{{error}}</span>
                             </li>
                         </ul>
                         <fieldset>
@@ -25,9 +25,6 @@
                                         <div *ngIf="formValidationService.controlHasError('firstName', 'required')" class="text-danger" i18n="@@first_name_is_required">First name is required.</div>
                                         <div *ngIf="formValidationService.controlHasError('firstName', 'pattern')" class="text-danger" i18n="@@first_name_should_only_contain_letters">First name should only contain letters.</div>
                                         <div *ngIf="formValidationService.controlHasError('firstName', 'maxlength')" class="text-danger" i18n="@@first_name_should_be_maximum_100_symbols">First name should be maximum 100 symbols.</div>
-                                        <div *ngIf="formValidationService.controlHasError('firstName')">
-                                            <div *ngFor="let error of formValidationService.errors['firstName']" class="text-danger">{{ error }}</div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -38,9 +35,6 @@
                                         <div *ngIf="formValidationService.controlHasError('lastName', 'required')" class="text-danger" i18n="@@last_name_is_required">Last name is required.</div>
                                         <div *ngIf="formValidationService.controlHasError('lastName', 'pattern')" class="text-danger" i18n="@@last_name_should_only_contain_letters">Last name should only contain letters.</div>
                                         <div *ngIf="formValidationService.controlHasError('lastName', 'maxlength')" class="text-danger" i18n="@@last_name_should_be_maximum_100_symbols">Last name should be maximum 100 symbols.</div>
-                                        <div *ngIf="formValidationService.controlHasError('lastName')">
-                                            <div *ngFor="let error of formValidationService.errors['lastName']" class="text-danger">{{ error }}</div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -51,9 +45,6 @@
                                         <input type="tel" class="form-control" id="phoneNumber" formControlName="phoneNumber" i18n-title="@@please_enter_your_phone_number_here" title="Please enter your phone number here." />
                                         <div *ngIf="formValidationService.controlHasError('phoneNumber', 'pattern')" class="text-danger" i18n="@@phone_number_is_invalid">Phone number is invalid.</div>
                                         <div *ngIf="formValidationService.controlHasError('phoneNumber', 'maxlength')" class="text-danger" i18n="@@phone_number_should_be_maximum_100_symbols">Phone number should be maximum 100 symbols.</div>
-                                        <div *ngIf="formValidationService.controlHasError('phoneNumber')">
-                                            <div *ngFor="let error of formValidationService.errors['phoneNumber']" class="text-danger">{{ error }}</div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -73,9 +64,6 @@
                                     <!-- Client validation -->
                                     <div *ngIf="formValidationService.controlHasError('email', 'required')" class="text-danger" i18n="@@email_is_required">Email is required.</div>
                                     <div *ngIf="formValidationService.controlHasError('email', 'pattern')" class="text-danger" i18n="@@email_is_invalid">Email is invalid.</div>
-                                    <div *ngIf="formValidationService.controlHasError('email')">
-                                        <div *ngFor="let error of formValidationService.errors['email']" class="text-danger">{{ error }}</div>
-                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -86,9 +74,6 @@
                                     <div *ngIf="formValidationService.controlHasError('password', 'required')" class="text-danger" i18n="@@password_is_required">Password is required.</div>
                                     <div *ngIf="formValidationService.controlHasError('password', 'minlength')" class="text-danger" i18n="@@password_minlength">Password must be at least 6 characters.</div>
                                     <div *ngIf="formValidationService.controlHasError('password', 'pattern')" class="text-danger" i18n="@@password_cannot_begin_or_end_with_space">Password cannot begin or end with space.</div>
-                                    <div *ngIf="formValidationService.controlHasError('password')">
-                                        <div *ngFor="let error of formValidationService.errors['password']" class="text-danger">{{ error }}</div>
-                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">

@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { EmailPattern, NamePattern, PasswordPattern, PhonePattern } from '../../consts/consts';
 import { RegisterBindingModel } from '../../models/register-models/binding-models/register-binding-model';
+import { RegisterViewModel } from '../../models/register-models/view-models/register-view-model';
+import { AuthenticationService } from '../../services/authentication.service';
 import { FormValidationService } from '../../services/form-validation.service';
 import { LoadingSpinnerService } from '../../services/loading-spinner.service';
 
@@ -18,8 +20,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     private subscription: Subscription;
 
-    constructor(public formValidationService: FormValidationService, private routerService: Router, private route: ActivatedRoute, private formBuilder: FormBuilder, private loadingSpinnerService: LoadingSpinnerService) {
-        this.returnUrl = '/';
+    constructor(public formValidationService: FormValidationService, public authenticationService: AuthenticationService, private routerService: Router, private route: ActivatedRoute, private formBuilder: FormBuilder, private loadingSpinnerService: LoadingSpinnerService) {
+        this.returnUrl = '/home';
 
         this.subscription = new Subscription();
     }
@@ -63,12 +65,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
             ]
         );
 
-        let professionFormControl = this.formBuilder.control('',
-            [
-                Validators.maxLength(100)
-            ]
-        );
-
         let passwordFormControl = this.formBuilder.control('',
             [
                 Validators.minLength(6),
@@ -99,23 +95,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
             ]
         );
 
-        let privacyPolicyFormControl = this.formBuilder.control(false,
-            [
-                Validators.requiredTrue
-            ]
-        );
-
         let dateOfBirthFormControl = this.formBuilder.control('');
 
         return this.formBuilder.group({
             firstName: firstNameFormControl,
             lastName: lastNameFormControl,
-            profession: professionFormControl,
             email: emailFormControl,
             password: passwordFormControl,
             confirmPassword: confirmPasswordFormControl,
             phoneNumber: phoneFormControl,
-            privacyPolicy: privacyPolicyFormControl,
             dateOfBirth: dateOfBirthFormControl
         });
     }
@@ -177,15 +165,18 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private register(register: RegisterBindingModel): void {
         this.loadingSpinnerService.showLoadingSpinner();
 
-        // this.subscription.add(this.accountsService.register(register)
-        //     .subscribe(() => {
-        //         this.loadingSpinnerService.hideLoadingSpinner();
+        this.subscription.add(this.authenticationService.register(register)
+            .subscribe({
+                next: (registerViewModel: RegisterViewModel) => {
+                    this.loadingSpinnerService.hideLoadingSpinner();
 
-        //         this.routerService.navigateByUrl(this.returnUrl);
-        //     }, (errorResponse: HttpErrorResponse) => {
-        //         this.formValidationService.handleErrorResponse(errorResponse);
+                    this.routerService.navigateByUrl(this.returnUrl);
+                },
+                error: (errorResponse: HttpErrorResponse) => {
+                    this.formValidationService.handleErrorResponse(errorResponse);
 
-        //         this.loadingSpinnerService.hideLoadingSpinner();
-        //     }));
+                    this.loadingSpinnerService.hideLoadingSpinner();
+                }
+            }))
     }
 }

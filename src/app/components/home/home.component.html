@@ -1,0 +1,43 @@
+<div class="container-fluid">
+    <div class="container" id="header-wrapper">
+        <div id="logo-wrapper">
+            <img src="assets/images/football-predictions.png" class="img-fluid mx-auto d-block" i18n-alt="@@predictions" alt="Predictions" i18n-title="@@predictions_title" title="Predictions" [routerLink]="['/']">
+        </div>
+    </div>
+</div>
+<nav class="navbar navbar-expand-lg navbar-light navbar-fixed-top bg-secondary">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+            aria-expanded="false" aria-label="Toggle navigation" (click)="onToggleButtonClicked()">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div [ngbCollapse]="isMenuCollapsed" class="navbar-collapse collapse" id="navbarNav">
+            <ul class="navbar-nav" data-toggle="collapse" data-target=".navbar-collapse.show">
+                <li class="nav-item">
+                    <a [routerLink]="['my-predictions']" class="nav-link" routerLinkActive="active" i18n-title="@@my_predictions" title="My predictions" i18n="@@my_predictions" (click)="onNavigationButtonClicked()">My predictions</a>
+                </li>
+                <li class="nav-item">
+                    <a [routerLink]="['make-prediction']" class="nav-link" routerLinkActive="active" i18n-title="@@make_prediction" title="Make prediction" i18n="@@make_prediction" (click)="onNavigationButtonClicked()">Make prediction</a>
+                </li>
+                <li class="nav-item">
+                    <a [routerLink]="['all-predictions']" class="nav-link" i18n-title="@@all_predictions" title="All predictions" i18n="@@all_predictions" routerLinkActive="active" (click)="onNavigationButtonClicked()">All predictions</a>
+                </li>
+                <li class="nav-item">
+                    <a [routerLink]="['standings']" class="nav-link" i18n-title="@@standings" routerLinkActive="active" title="Standings" i18n="@@standings" (click)="onNavigationButtonClicked()">Standings</a>
+                </li>
+                <li class="nav-item">
+                    <a routerLink="" class="nav-link" i18n-title="@@logout_menu" title="Logout" i18n="@@logout_menu" (click)="onLogoutButtonClicked()">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- <div *ngIf="userProfilesService.hasError" class="container">
+    <div class="row form-group">
+        <ul>
+            <li class="text-danger" i18n="@@error_message">{{userProfilesService.errorMessage}}</li>
+        </ul>
+    </div>
+</div> -->
+
+<router-outlet></router-outlet>

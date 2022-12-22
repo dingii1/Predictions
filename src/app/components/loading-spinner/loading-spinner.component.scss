@@ -1,3 +1,5 @@
+@import '../../../assets/bootstrap/_variables.scss';
+
 $transparent: rgb(0, 0, 0);
 
 .modal-backdrop {
@@ -13,7 +15,7 @@ $transparent: rgb(0, 0, 0);
     border-width: 16px;
     border-style: solid;
     border-color: #f3f3f3;
-    border-top-color: #cbf33a;
+    border-top-color: $primary;
     border-radius: 50%;
     animation: spin 2s linear infinite;
     z-index: 10100 !important;

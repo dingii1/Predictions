@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { EmailPattern } from '../../consts/consts';
 import { LoginBindingModel } from '../../models/login-models/binding-models/login-binding-model';
+import { LoginViewModel } from '../../models/login-models/view-models/login-view-model';
+import { AuthenticationService } from '../../services/authentication.service';
 
 import { FormValidationService } from '../../services/form-validation.service';
 import { LoadingSpinnerService } from '../../services/loading-spinner.service';
@@ -15,15 +17,12 @@ import { LoadingSpinnerService } from '../../services/loading-spinner.service';
     styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-    isFormInitialized: boolean;
-    isFormInitializedSuccessfully: boolean;
-    email: string | undefined;
+    private returnUrl: string;
 
     private subscription: Subscription;
 
-    constructor(public formValidationService: FormValidationService, private formBuilder: FormBuilder, private routerService: Router, private route: ActivatedRoute, private loadingSpinnerService: LoadingSpinnerService) {
-        this.isFormInitialized = false;
-        this.isFormInitializedSuccessfully = false;
+    constructor(public formValidationService: FormValidationService, public authenticationService: AuthenticationService, private formBuilder: FormBuilder, private routerService: Router, private route: ActivatedRoute, private loadingSpinnerService: LoadingSpinnerService) {
+        this.returnUrl = '/home';
 
         this.subscription = new Subscription();
     }
@@ -72,17 +71,19 @@ export class LoginComponent implements OnInit {
 
         let loginBindingModel: LoginBindingModel = this.getLoginBindingModel();
 
-        // this.subscription.add(this.accountsService.login()
-        //     .subscribe(async () => {
+        this.subscription.add(this.authenticationService.login(loginBindingModel)
+            .subscribe({
+                next: (loginViewModel: LoginViewModel) => {
+                    this.loadingSpinnerService.hideLoadingSpinner();
 
-        //         this.loadingSpinnerService.hideLoadingSpinner();
+                    this.routerService.navigateByUrl(this.returnUrl);
+                },
+                error: (errorResponse: HttpErrorResponse) => {
+                    this.formValidationService.handleErrorResponse(errorResponse);
 
-        //         this.routerService.navigateByUrl('/home');
-        //     }, (errorResponse: HttpErrorResponse) => {
-        //         this.loadingSpinnerService.hideLoadingSpinner();
-
-        //         this.formValidationService.handleErrorResponse(errorResponse);
-        //     }));
+                    this.loadingSpinnerService.hideLoadingSpinner();
+                }
+            }))
     }
 
     private getLoginBindingModel(): LoginBindingModel {

@@ -5,7 +5,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorsContainer } from '../models/errors-container';
 import { TryGetControlResult } from '../models/try-get-control-result';
 import { IValidationErrors } from '../interfaces/validation-errors';
-import { HttpErrorsService } from './http-errors.service';
 import { ValidationErrors } from '../models/validation-errors';
 
 const ModelValidationErrorsKey = 'errors';
@@ -18,7 +17,7 @@ export class FormValidationService {
 
     formGroup!: FormGroup;
 
-    constructor(private httpErrorsService: HttpErrorsService) {
+    constructor() {
         this.errors = new ErrorsContainer();
     }
 
@@ -62,42 +61,44 @@ export class FormValidationService {
         return doesControlHaveErrors;
     }
 
-    handleErrorResponse(errorResponse: HttpErrorResponse, routerParam?: string | string[], id?: number): void {
-        this.httpErrorsService.handleErrorResponse(errorResponse, (errors) => this.setErrors(errors), routerParam, id);
+    handleErrorResponse(errorResponse: HttpErrorResponse): void {
+        switch (errorResponse?.error?.error?.message) {
+            case 'EMAIL_EXISTS':
+                this.setGeneralErrors(['Email already exists.']);
+                break;
+
+            case 'OPERATION_NOT_ALLOWED':
+                this.setGeneralErrors(['Password sign-in is disabled.']);
+                break;
+
+            case 'TOO_MANY_ATTEMPTS_TRY_LATER':
+                this.setGeneralErrors(['To many attempts to sign-up, please try again later.']);
+                break;
+
+            case 'EMAIL_NOT_FOUND':
+                this.setGeneralErrors(['There is no user with the corresponding email.']);
+                break;
+
+            case 'INVALID_PASSWORD':
+                this.setGeneralErrors(['The password is invalid or the user does not have a password.']);
+                break;
+
+            case 'USER_DISABLED':
+                this.setGeneralErrors(['The user account has been disabled by an administrator.']);
+                break;
+
+            default:
+                this.setGeneralErrors(['Unknown error occured.']);
+                break;
+        }
     }
 
-    handleError(httpStatusCode: number, error: string | { [property: string]: string[] }, routerParam?: string | string[], id?: number): void {
-        this.httpErrorsService.handleError(httpStatusCode, error, (errors) => this.setErrors(errors), routerParam, id);
-    }
-
-    /**
-     * Set errors on FormControls or FormGroups. It has limitations to show only the errors from the FormGroup when at the same time there is an error of form controls in the same form group.
-     *
-     * Examples 1:
-     * formValidationService.setErrors('Error !!!') - sets general error of the main form group
-     *
-     * Example 2:
-     *
-     * signersValidationErrors = new ValidationErrors();
-     * signersValidationErrors[Signers] = new ValidationErrors();
-     * signersValidationErrors[Signers][i] = ['Error 1', 'Error 2'];
-     *
-     * formValidationService.setErrors(signersValidationErrors) - sets errors of a form group with index i
-     */
     setErrors(errors: string | ValidationErrors): void {
         if (typeof errors === 'string') {
             this.setGeneralErrors([errors]);
         }
-        else {
-            this.setValidationErrors(errors, this.formGroup, this.errors);
-        }
     }
 
-    /**
-     * Get errors of AbstractControl.
-     *
-     * If control is not passed it will return the general errors.
-     */
     getErrors(formControlName?: string | number | (string | number)[]): string[] {
         let errors: any[] = [];
         if (formControlName === undefined ||
@@ -151,13 +152,6 @@ export class FormValidationService {
         }
     }
 
-    /**
-     * Search for FormArray by name and returns its length.
-     *
-     * If control is not found it will throw an error.
-     *
-     * If control is found but it is not of type FormArray will return 0.
-     */
     getLength(formControlName: string | number | (string | number)[]): number {
         let control = this.getControl(formControlName);
         if (control instanceof FormArray) {
@@ -167,13 +161,6 @@ export class FormValidationService {
         return 0;
     }
 
-    /**
-     * Search for AbstractControl by name and returns its value.
-     *
-     * If control is not found it will throw an error.
-     *
-     * If formControlName is not passed it will return the value of initial FormGroup.
-     */
     getValue<T>(formControlName?: string | number | (string | number)[]): T {
         let value: T;
         if (formControlName !== undefined &&
@@ -271,15 +258,6 @@ export class FormValidationService {
         control.updateValueAndValidity();
     }
 
-    setValidators(formControlName: string | number | (string | number)[], validator: ValidatorFn | ValidatorFn[] | null): void {
-        let control = this.getControl(formControlName);
-
-        control.setValidators(validator);
-
-        control.markAsTouched();
-        control.updateValueAndValidity();
-    }
-
     reset(): void {
         if (this.formGroup !== undefined &&
             this.formGroup !== null) {
@@ -355,91 +333,6 @@ export class FormValidationService {
 
         for (let i = 0; i < errors.length; i++) {
             this.errors.general.push(errors[i]);
-        }
-    }
-
-    private setValidationErrors(errors: ValidationErrors, formControl: AbstractControl, errorsContainer: IValidationErrors): void {
-        if (errors[ModelValidationErrorsKey] !== null &&
-            errors[ModelValidationErrorsKey] !== undefined) {
-            this.setValidationErrors(errors[ModelValidationErrorsKey] as IValidationErrors, formControl, errorsContainer);
-        }
-        else {
-            for (let fieldName in errors) {
-                let currentErrors = errors[fieldName];
-                let fieldKeys = this.getFieldKeys(fieldName);
-                let findControlMetadata = this.tryGetControl(fieldKeys, formControl);
-
-                if (Array.isArray(currentErrors)) {
-                    if (findControlMetadata.isControlFound &&
-                        findControlMetadata.control !== undefined &&
-                        findControlMetadata.control !== null) {
-                        if (findControlMetadata.control.untouched) {
-                            findControlMetadata.control.markAsTouched();
-                        }
-
-                        findControlMetadata.control.setErrors({ invalid: true });
-
-                        this.fillErrorsContainer(errorsContainer, fieldKeys, currentErrors);
-                    }
-                    else {
-                        this.setGeneralErrors(currentErrors);
-                    }
-                }
-                else {
-                    let currentErrorsContainer = new ValidationErrors();
-
-                    this.fillErrorsContainer(errorsContainer, fieldKeys, currentErrorsContainer);
-
-                    this.setValidationErrors(currentErrors, findControlMetadata.control!, currentErrorsContainer);
-                }
-            }
-        }
-    }
-
-    private getFieldKeys(errorFieldName: string): string | number | (string | number)[] {
-        return errorFieldName.indexOf('.') >= 0 || errorFieldName.indexOf('[') >= 0 ?
-            errorFieldName.split('.')
-                .map(fp => fp.split('['))
-                .reduce((previousValue, currentValue) => previousValue.concat(currentValue), [])
-                .map(fp => this.getFieldKey(fp.replace(']', ''))) :
-            this.getFieldKey(errorFieldName);
-    }
-
-    private getFieldKey(fieldName: string): string | number {
-        let fieldKey: string | number = fieldName;
-
-        let fieldKeyNumber = parseInt(fieldKey);
-        if (!isNaN(fieldKeyNumber)) {
-            fieldKey = fieldKeyNumber;
-        }
-
-        return fieldKey;
-    }
-
-    private fillErrorsContainer(errorsContainer: IValidationErrors, fieldKeys: string | number | (string | number)[], errors: string[] | IValidationErrors): void {
-        if (Array.isArray(fieldKeys)) {
-            let currentErrorsContainer = errorsContainer;
-
-            fieldKeys.forEach((fieldKey, i) => {
-                if (i < fieldKeys.length - 1) {
-                    let newErrorsContainer = currentErrorsContainer[fieldKey] as IValidationErrors;
-
-                    if (newErrorsContainer === undefined ||
-                        newErrorsContainer === null) {
-                        newErrorsContainer = new ValidationErrors();
-                    }
-
-                    currentErrorsContainer[fieldKey] = newErrorsContainer;
-
-                    currentErrorsContainer = newErrorsContainer;
-                }
-                else {
-                    currentErrorsContainer[fieldKey] = errors;
-                }
-            });
-        }
-        else {
-            errorsContainer[fieldKeys] = errors;
         }
     }
 
